@@ -5,6 +5,7 @@ import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
 import cookieParser from "cookie-parser";
 import { protectedRoute } from "./middlewares/authMiddleware.js";
+
 import adminAuthRoutes from "./routes/admin/adminAuthRoute.js";
 import adminUserRoutes from "./routes/admin/adminUserRoute.js";
 import adminProductRoutes from "./routes/admin/adminProductRoute.js";
@@ -13,8 +14,15 @@ import adminOrderRoutes from "./routes/admin/adminOrderRoute.js";
 import adminCustomCakeRoutes from "./routes/admin/adminCustomCakeRoute.js";
 import adminChatRoutes from "./routes/admin/adminChatRoute.js";
 import adminDashboardRoutes from "./routes/admin/adminDashboardRoute.js";
+
 import productRoutes from "./routes/productRoute.js";
 import categoryRoutes from "./routes/categoryRoute.js";
+import cartRoutes from "./routes/cartRoute.js";
+import orderRoutes from "./routes/orderRoute.js";
+import customCakeRoutes from "./routes/customCakeRoute.js";
+import paymentRoutes from "./routes/paymentRoute.js";
+import vnpayRoutes from "./routes/vnpayRoute.js";
+import reviewRoutes from "./routes/reviewRoute.js";
 
 dotenv.config();
 
@@ -25,42 +33,50 @@ const PORT = process.env.PORT || 5001;
 app.use(express.json());
 app.use(cookieParser());
 
-// public routes
+/* ========================
+   PUBLIC ROUTES (KHÔNG cần token)
+======================== */
+
+// user auth
 app.use("/api/auth", authRoute);
 
-// private routes
-app.use(protectedRoute);
-app.use("/api/users", userRoute);
-
-// adminAuth routes
+// admin login / logout / me
 app.use("/api/admin/auth", adminAuthRoutes);
 
-// adminUser routes
+// xem sản phẩm, category (public)
+app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
+
+// vnpay callback (thường public)
+app.use("/api/payments/vnpay", vnpayRoutes);
+
+/* ========================
+   PROTECTED USER ROUTES (cần token user)
+======================== */
+
+app.use("/api/users", protectedRoute, userRoute);
+app.use("/api/carts", protectedRoute, cartRoutes);
+app.use("/api/orders", protectedRoute, orderRoutes);
+app.use("/api/custom-cakes", protectedRoute, customCakeRoutes);
+app.use("/api/payments", protectedRoute, paymentRoutes);
+app.use("/api/reviews", protectedRoute, reviewRoutes);
+
+/* ========================
+   ADMIN ROUTES 
+   (đã có authMiddleware + adminMiddleware bên trong từng route)
+======================== */
+
 app.use("/api/admin/users", adminUserRoutes);
-
-// adminProduct routes
 app.use("/api/admin/products", adminProductRoutes);
-
-// adminCategory routes
 app.use("/api/admin/categories", adminCategoryRoutes);
-
-// adminOrder routes
 app.use("/api/admin/orders", adminOrderRoutes);
-
-// adminCustomCake routes
 app.use("/api/admin/custom-cakes", adminCustomCakeRoutes);
-
-// adminChat routes
 app.use("/api/admin/chats", adminChatRoutes);
-
-//adminDashboard routes
 app.use("/api/admin/dashboards", adminDashboardRoutes);
 
-// product routes
-app.use("/api/products", productRoutes);
-
-// category routes
-app.use("./api/categories", categoryRoutes);
+/* ========================
+   START SERVER
+======================== */
 
 connectDB().then(() => {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

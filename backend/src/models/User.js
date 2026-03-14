@@ -28,6 +28,16 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    status: {
+      type: String,
+      enum: ["active", "inactive", "deleted"],
+      default: "active",
+    },
+    role: {
+      type: String,
+      enum: ["USER", "ADMIN", "STAFF"],
+      default: "USER",
+    },
     avatarUrl: {
       type: String, // lưu link CDN để hiển thị hình
     },
@@ -41,7 +51,7 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model("User", userSchema);

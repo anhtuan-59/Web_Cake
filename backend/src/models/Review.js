@@ -24,8 +24,19 @@ const reviewSchema = new mongoose.Schema(
       required: true,
     },
     comment: String,
+
+    // Lưu phản hồi
+    autoReply: {
+      type: String,
+      default: null,
+    },
+
+    autoReplyAt: {
+      type: Date,
+      default: null,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Review", reviewSchema);

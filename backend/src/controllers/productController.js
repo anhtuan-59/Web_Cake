@@ -24,7 +24,7 @@ export const getProducts = async (req, res) => {
       maxPrice,
     } = req.query;
 
-    const filter = { status: "ACTIVE" };
+    const filter = { status: "active" };
 
     // lọc theo category
     if (category) {
@@ -71,7 +71,7 @@ export const getProductDetail = async (req, res) => {
 
     const product = await Product.findOne({
       _id: id,
-      status: "ACTIVE",
+      status: "active",
     }).populate("category", "name slug");
 
     if (!product) {
@@ -104,7 +104,7 @@ export const getProductsByCategory = async (req, res) => {
 
     const products = await Product.find({
       category: category._id,
-      status: "ACTIVE",
+      status: "active",
     }).sort({ createdAt: -1 });
 
     res.json(products);

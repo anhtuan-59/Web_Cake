@@ -26,7 +26,7 @@ export const createCategory = async (req, res) => {
       name,
       slug: slugify(name, { lower: true }),
       description,
-      createdBy: req.admin.id,
+      createdBy: req.user._id,
     });
 
     res.status(201).json(category);
